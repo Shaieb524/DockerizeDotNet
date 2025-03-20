@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApiDb.Entities;
 
 namespace DotNetApi.Controllers
 {
