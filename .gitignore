@@ -55,3 +55,8 @@ nunit-*.xml
 
 
 .vs/
+
+
+.env*
+!.env.example
+.build-args
