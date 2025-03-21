@@ -7,7 +7,7 @@ EXPOSE 443
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-ARG BUILD_CONFIGURATION
+ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
 
