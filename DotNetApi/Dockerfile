@@ -7,6 +7,12 @@ EXPOSE 443
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
+# Generate dev certificate on Windows host machine for localhost ONLY (not for production)
+ARG HTTPS_CERT_PASSWORD
+RUN mkdir -p /https && \
+    dotnet dev-certs https -ep /https/aspnetapp.pfx -p $HTTPS_CERT_PASSWORD && \
+    dotnet dev-certs https --trust
+
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
@@ -29,5 +35,11 @@ RUN dotnet publish "./DotNetApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Copy certificate from build stage
+# Though it is not recommended to copy the certificate from build stage to final stage, it is done here for simplicity
+# For production, it is recommended to use a secure way to copy the certificate to the final stage such as using some key vault
+# or at least mount the certificate from a secure location
+COPY --from=build /https/aspnetapp.pfx /https/
 
 ENTRYPOINT ["dotnet", "DotNetApi.dll"]

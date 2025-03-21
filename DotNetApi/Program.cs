@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WebApiDb.Context;
 using WebApiDb.Entities;
 
@@ -23,8 +24,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
+if (!builder.Configuration.GetValue<bool>("DisableHttpsRedirection", false))
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthorization();
 
 app.MapControllers();
